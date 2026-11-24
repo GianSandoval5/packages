@@ -29,6 +29,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $actual = git -C "$env:RUNNER_TEMP\flutter-sdk" rev-parse HEAD
           if ($actual -ne 'ae9b586f34a8443573f82ef57c3bf914a908cbf7') { throw 'Unexpected Flutter SDK SHA' }
+          git fetch --depth 1 https://github.com/flutter/packages.git 5b93485c4b49318606ea4d0648203f6ec7b4aaf3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "$env:RUNNER_TEMP\flutter-sdk\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Baseline, patched native build, and project tests
         shell: pwsh

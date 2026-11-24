@@ -69,7 +69,7 @@ def main():
     require('native-tests', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'native-test', '--windows', '--packages=local_auth_windows'])
     require('dart-analyze', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'analyze', '--packages=local_auth_windows'])
     require('dart-tests', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'test', '--packages=local_auth_windows'])
-    require('metadata-validation', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'validate', '--check-for-missing-changes', '--packages=local_auth_windows'])
+    require('metadata-validation', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'validate', '--check-for-missing-changes', '--packages=local_auth_windows', f'--base-sha={BASE}'])
     require('diff-check', ['git', 'diff', '--check'])
     require('source-restored', ['git', 'diff', '--exit-code', '--', 'packages/local_auth/local_auth_windows'])
     RESULTS['complete'] = True
