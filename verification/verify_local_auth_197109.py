@@ -66,9 +66,9 @@ def main():
         (OUT / 'results.json').write_text(json.dumps(RESULTS, indent=2), encoding='utf-8')
     require('patched-build', [FLUTTER, 'build', 'windows', '--debug'], PACKAGE / 'example')
     # The repository native-test tool builds the unit_tests target in Debug.
-    require('native-tests', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'native-test', '--windows', '--packages=local_auth_windows'])
-    require('dart-analyze', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'analyze', '--packages=local_auth_windows'])
-    require('dart-tests', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'test', '--packages=local_auth_windows'])
+    require('native-tests', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'native-test', '--windows', '--packages=local_auth_windows', f'--base-sha={BASE}'])
+    require('dart-analyze', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'analyze', '--packages=local_auth_windows', f'--base-sha={BASE}'])
+    require('dart-tests', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'test', '--packages=local_auth_windows', f'--base-sha={BASE}'])
     require('metadata-validation', [DART, 'run', 'script/tool/bin/flutter_plugin_tools.dart', 'validate', '--check-for-missing-changes', '--packages=local_auth_windows', f'--base-sha={BASE}'])
     require('diff-check', ['git', 'diff', '--check'])
     require('source-restored', ['git', 'diff', '--exit-code', '--', 'packages/local_auth/local_auth_windows'])
