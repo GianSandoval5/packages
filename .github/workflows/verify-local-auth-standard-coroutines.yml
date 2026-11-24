@@ -1,0 +1,43 @@
+# Copyright 2026 The Flutter Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+name: Verify local auth standard coroutines
+on:
+  push:
+    branches: [ci/verify-local-auth-standard-coroutines-197109]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [windows-2022, windows-2025-vs2026]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    env:
+      RUNNER_LABEL: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned Flutter stable SDK
+        shell: pwsh
+        run: |
+          git clone --branch 3.50.1 --depth 1 https://github.com/flutter/flutter.git "$env:RUNNER_TEMP\flutter-sdk"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $actual = git -C "$env:RUNNER_TEMP\flutter-sdk" rev-parse HEAD
+          if ($actual -ne 'ae9b586f34a8443573f82ef57c3bf914a908cbf7') { throw 'Unexpected Flutter SDK SHA' }
+          "$env:RUNNER_TEMP\flutter-sdk\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Baseline, patched native build, and project tests
+        shell: pwsh
+        run: python verification/verify_local_auth_197109.py
+      - name: Preserve verification logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: local-auth-${{ matrix.runner }}
+          path: verification-results
+          if-no-files-found: warn
+          retention-days: 14
